@@ -10,18 +10,13 @@ import android.widget.TextView;
 import com.example.android.bakingapp.R;
 import com.example.android.bakingapp.data.models.Recipe;
 
-import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import java.util.ArrayList;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
 
-    private List<Recipe> mRecipeList;
+    private ArrayList<Recipe> mRecipeList;
 
-    public RecipeAdapter(List<Recipe> recipeList) {
-        mRecipeList = recipeList;
-    }
+
 
     @NonNull
     @Override
@@ -41,19 +36,25 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
+        if (null == mRecipeList) return 0;
         return mRecipeList.size();
     }
-    public void addRecipe(List<Recipe> list){
+
+    public void addRecipe(ArrayList<Recipe> list){
         mRecipeList = list;
         notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.recipe_title)
+
         TextView mTitle;
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            mTitle = itemView.findViewById(R.id.recipe_title);
+
         }
+    }
+    public ArrayList<Recipe> getRecipeList(){
+        return mRecipeList;
     }
 }

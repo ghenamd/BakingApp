@@ -1,9 +1,20 @@
 package com.example.android.bakingapp.data.models;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Entity(foreignKeys = @ForeignKey(
+        entity = RecipeRoom.class,
+        parentColumns = "id",
+        childColumns = "recipeId"))
 public class Step {
+    @PrimaryKey(autoGenerate = true)
+    private int recipeId;
     @SerializedName("id")
     @Expose
     private Integer id;
@@ -20,6 +31,24 @@ public class Step {
     @Expose
     private String thumbnailURL;
 
+    public Step(int recipeId, Integer id, String shortDescription, String description, String videoURL, String thumbnailURL) {
+        this.recipeId = recipeId;
+        this.id = id;
+        this.shortDescription = shortDescription;
+        this.description = description;
+        this.videoURL = videoURL;
+        this.thumbnailURL = thumbnailURL;
+    }
+
+    @Ignore
+    public Step(Integer id, String shortDescription, String description, String videoURL, String thumbnailURL) {
+        this.id = id;
+        this.shortDescription = shortDescription;
+        this.description = description;
+        this.videoURL = videoURL;
+        this.thumbnailURL = thumbnailURL;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -34,6 +63,14 @@ public class Step {
 
     public void setShortDescription(String shortDescription) {
         this.shortDescription = shortDescription;
+    }
+
+    public int getRecipeId() {
+        return recipeId;
+    }
+
+    public void setRecipeId(int recipeId) {
+        this.recipeId = recipeId;
     }
 
     public String getDescription() {

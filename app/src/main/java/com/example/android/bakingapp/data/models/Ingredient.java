@@ -1,12 +1,28 @@
 package com.example.android.bakingapp.data.models;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Entity(indices = {@Index("id"),@Index("recipeId")},
+        foreignKeys = @ForeignKey(
+        entity = RecipeRoom.class,
+        parentColumns = "id",
+        childColumns = "recipeId"))
 public class Ingredient implements Parcelable {
+
+
+    @PrimaryKey(autoGenerate = true)
+    private int id;
+
+    private int recipeId;
     @SerializedName("quantity")
     @Expose
     private Double quantity;
@@ -16,6 +32,20 @@ public class Ingredient implements Parcelable {
     @SerializedName("ingredient")
     @Expose
     private String ingredient;
+
+    public Ingredient(int recipeId, Double quantity, String measure, String ingredient) {
+        this.recipeId = recipeId;
+        this.quantity = quantity;
+        this.measure = measure;
+        this.ingredient = ingredient;
+    }
+
+    @Ignore
+    public Ingredient(Double quantity, String measure, String ingredient) {
+        this.quantity = quantity;
+        this.measure = measure;
+        this.ingredient = ingredient;
+    }
 
     protected Ingredient(Parcel in) {
         if (in.readByte() == 0) {
@@ -61,6 +91,22 @@ public class Ingredient implements Parcelable {
 
     public void setIngredient(String ingredient) {
         this.ingredient = ingredient;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getRecipeId() {
+        return recipeId;
+    }
+
+    public void setRecipeId(int recipeId) {
+        this.recipeId = recipeId;
     }
 
     @Override

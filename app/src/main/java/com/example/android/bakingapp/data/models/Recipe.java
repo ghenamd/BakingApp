@@ -1,8 +1,6 @@
 package com.example.android.bakingapp.data.models;
 
-import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
-import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -11,11 +9,10 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
-@Entity
+
 public class Recipe implements Parcelable {
     @SerializedName("id")
     @Expose
-    @PrimaryKey
     private Integer id;
     @SerializedName("name")
     @Expose

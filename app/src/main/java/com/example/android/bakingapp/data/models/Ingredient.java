@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 public class Ingredient implements Parcelable {
     @SerializedName("quantity")
     @Expose
-    private Integer quantity;
+    private Double quantity;
     @SerializedName("measure")
     @Expose
     private String measure;
@@ -17,11 +17,33 @@ public class Ingredient implements Parcelable {
     @Expose
     private String ingredient;
 
-    public Integer getQuantity() {
+    protected Ingredient(Parcel in) {
+        if (in.readByte() == 0) {
+            quantity = null;
+        } else {
+            quantity = in.readDouble();
+        }
+        measure = in.readString();
+        ingredient = in.readString();
+    }
+
+    public static final Creator<Ingredient> CREATOR = new Creator<Ingredient>() {
+        @Override
+        public Ingredient createFromParcel(Parcel in) {
+            return new Ingredient(in);
+        }
+
+        @Override
+        public Ingredient[] newArray(int size) {
+            return new Ingredient[size];
+        }
+    };
+
+    public Double getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(Double quantity) {
         this.quantity = quantity;
     }
 
@@ -47,30 +69,14 @@ public class Ingredient implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.quantity);
-        dest.writeString(this.measure);
-        dest.writeString(this.ingredient);
-    }
-
-    public Ingredient() {
-    }
-
-    protected Ingredient(Parcel in) {
-        this.quantity = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.measure = in.readString();
-        this.ingredient = in.readString();
-    }
-
-    public static final Parcelable.Creator<Ingredient> CREATOR = new Parcelable.Creator<Ingredient>() {
-        @Override
-        public Ingredient createFromParcel(Parcel source) {
-            return new Ingredient(source);
+    public void writeToParcel(Parcel parcel, int i) {
+        if (quantity == null) {
+            parcel.writeByte((byte) 0);
+        } else {
+            parcel.writeByte((byte) 1);
+            parcel.writeDouble(quantity);
         }
-
-        @Override
-        public Ingredient[] newArray(int size) {
-            return new Ingredient[size];
-        }
-    };
+        parcel.writeString(measure);
+        parcel.writeString(ingredient);
+    }
 }

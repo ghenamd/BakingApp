@@ -28,7 +28,7 @@ public class RecipeFragment extends Fragment {
     private RecipeAdapter mRecipeAdapter;
     private static final String TAG = "RecipeFragment";
     private Context mContext;
-    private ArrayList<Recipe> recipes;
+    private ArrayList<Recipe> mRecipes;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -41,29 +41,26 @@ public class RecipeFragment extends Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(manager);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setAdapter(mRecipeAdapter);
+
         RestManager restManager = new RestManager();
-        Call<ArrayList<Recipe>> call = restManager.getRecipeClient().getRecipes();
+        Call <ArrayList<Recipe>> call = restManager.getRecipeClient().getRecipes();
         call.enqueue(new Callback<ArrayList<Recipe>>() {
             @Override
             public void onResponse(Call<ArrayList<Recipe>> call, Response<ArrayList<Recipe>> response) {
-                recipes = response.body();
-                mRecipeAdapter.addRecipe(recipes);
-
+                mRecipes = response.body();
+                mRecipeAdapter.addRecipe(mRecipes);
+                Log.d(TAG, "onResponse: " + response.body());
             }
 
             @Override
             public void onFailure(Call<ArrayList<Recipe>> call, Throwable t) {
-
+                Log.d(TAG, "onFailure: " +String.valueOf(t));
             }
         });
-        Log.v(TAG, "onResponse: " + String.valueOf(recipes));
-
+        ;
+        mRecyclerView.setAdapter(mRecipeAdapter);
         return rootView;
 
     }
 
-    public void getRecipesFromApi(){
-
-    }
 }

@@ -9,5 +9,6 @@ import retrofit2.http.GET;
 
 public interface RecipeClient {
     @GET("baking.json")
-    Call <ArrayList<Recipe>> getRecipes();
+    Call<ArrayList<Recipe>> getRecipes();
+
 }

@@ -11,6 +11,7 @@ import com.example.android.bakingapp.R;
 import com.example.android.bakingapp.data.models.Recipe;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
 
@@ -31,6 +32,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         Recipe recipe = mRecipeList.get(position);
         String title = recipe.getName();
         holder.mTitle.setText(title);
+
 
     }
 
@@ -54,7 +56,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
         }
     }
-    public ArrayList<Recipe> getRecipeList(){
+    public List<Recipe> getRecipeList(){
         return mRecipeList;
     }
 }

@@ -16,14 +16,13 @@ import java.util.List;
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
 
     private ArrayList<Recipe> mRecipeList;
-
-
+    private OnRecipeClicked mRecipeClicked;
 
     @NonNull
     @Override
     public RecipeAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_item_sample,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_item_sample, parent, false);
         return new RecipeAdapter.ViewHolder(view);
     }
 
@@ -32,8 +31,15 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         Recipe recipe = mRecipeList.get(position);
         String title = recipe.getName();
         holder.mTitle.setText(title);
+    }
 
+    public RecipeAdapter(ArrayList<Recipe> recipeList, OnRecipeClicked recipeClicked) {
+        mRecipeList = recipeList;
+        mRecipeClicked = recipeClicked;
+    }
 
+    public interface OnRecipeClicked {
+        void onClickedItem(Recipe recipe);
     }
 
     @Override
@@ -42,21 +48,34 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         return mRecipeList.size();
     }
 
-    public void addRecipe(ArrayList<Recipe> list){
+    public void addRecipe(ArrayList<Recipe> list) {
         mRecipeList = list;
         notifyDataSetChanged();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView mTitle;
+
         public ViewHolder(View itemView) {
             super(itemView);
             mTitle = itemView.findViewById(R.id.recipe_title);
+            itemView.setOnClickListener(this);
+
+
+        }
+
+        @Override
+        public void onClick(View view) {
+            int position = getAdapterPosition();
+            Recipe recipe = mRecipeList.get(position);
+            mRecipeClicked.onClickedItem(recipe);
+
 
         }
     }
-    public List<Recipe> getRecipeList(){
+
+    public List<Recipe> getRecipeList() {
         return mRecipeList;
     }
 }

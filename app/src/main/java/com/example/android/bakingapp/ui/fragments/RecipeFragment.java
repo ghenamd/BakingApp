@@ -2,6 +2,7 @@ package com.example.android.bakingapp.ui.fragments;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,7 +15,9 @@ import android.view.ViewGroup;
 import com.example.android.bakingapp.R;
 import com.example.android.bakingapp.data.models.Recipe;
 import com.example.android.bakingapp.data.network.RestManager;
+import com.example.android.bakingapp.ui.RecipeDetailsActivity;
 import com.example.android.bakingapp.ui.adapters.RecipeAdapter;
+import com.example.android.bakingapp.utils.Constants;
 
 import java.util.ArrayList;
 
@@ -22,7 +25,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RecipeFragment extends Fragment {
+public class RecipeFragment extends Fragment implements RecipeAdapter.OnRecipeClicked {
 
     private RecyclerView mRecyclerView;
     private RecipeAdapter mRecipeAdapter;
@@ -37,7 +40,7 @@ public class RecipeFragment extends Fragment {
         mContext= getActivity().getBaseContext();
         mRecyclerView = rootView.findViewById(R.id.recipe_fragment_recyclerView);
 
-        mRecipeAdapter = new RecipeAdapter();
+        mRecipeAdapter = new RecipeAdapter(new ArrayList<Recipe>(),this);
         LinearLayoutManager manager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(manager);
         mRecyclerView.setHasFixedSize(true);
@@ -61,6 +64,12 @@ public class RecipeFragment extends Fragment {
         mRecyclerView.setAdapter(mRecipeAdapter);
         return rootView;
 
+    }
+    @Override
+    public void onClickedItem(Recipe recipe) {
+        Intent intent = new Intent(getActivity(),RecipeDetailsActivity.class);
+        intent.putExtra(Constants.PARCEL,recipe);
+        startActivity(intent);
     }
 
 }

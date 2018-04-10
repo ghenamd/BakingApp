@@ -21,7 +21,6 @@ public class Ingredient implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
-
     private int recipeId;
     @SerializedName("quantity")
     @Expose

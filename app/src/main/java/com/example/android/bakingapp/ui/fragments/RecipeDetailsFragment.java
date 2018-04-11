@@ -1,6 +1,7 @@
 package com.example.android.bakingapp.ui.fragments;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import com.example.android.bakingapp.data.models.Ingredient;
 import com.example.android.bakingapp.data.models.Recipe;
 import com.example.android.bakingapp.data.models.Step;
 import com.example.android.bakingapp.databinding.RecipeDetailsFragmentBinding;
+import com.example.android.bakingapp.ui.StepDetailActivity;
 import com.example.android.bakingapp.ui.adapters.IngredientAdapter;
 import com.example.android.bakingapp.ui.adapters.StepAdapter;
 import com.example.android.bakingapp.utils.Constants;
@@ -52,6 +54,9 @@ public class RecipeDetailsFragment extends Fragment implements StepAdapter.OnSte
 
     @Override
     public void onClicked(Step step) {
+        Intent intent = new Intent(getActivity(), StepDetailActivity.class);
+        intent.putExtra(Constants.PARCEL,step);
+        startActivity(intent);
 
     }
 }

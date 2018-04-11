@@ -11,7 +11,6 @@ import com.example.android.bakingapp.R;
 import com.example.android.bakingapp.data.models.Recipe;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
 
@@ -62,7 +61,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             mTitle = itemView.findViewById(R.id.recipe_title);
             itemView.setOnClickListener(this);
 
-
         }
 
         @Override
@@ -71,11 +69,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             Recipe recipe = mRecipeList.get(position);
             mRecipeClicked.onClickedItem(recipe);
 
-
         }
     }
 
-    public List<Recipe> getRecipeList() {
-        return mRecipeList;
-    }
 }

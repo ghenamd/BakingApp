@@ -66,7 +66,7 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.OnRecipeCl
     @Override
     public void onClickedItem(Recipe recipe) {
         Intent intent = new Intent(getActivity(),RecipeDetailsActivity.class);
-        intent.putExtra(Constants.PARCEL,recipe);
+        intent.putExtra(Constants.PARCEL_RECIPE,recipe);
         startActivity(intent);
     }
 

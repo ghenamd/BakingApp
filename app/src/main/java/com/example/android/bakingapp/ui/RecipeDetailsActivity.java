@@ -13,7 +13,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_details);
-        Recipe recipe = getIntent().getParcelableExtra(Constants.PARCEL);
+        Recipe recipe = getIntent().getParcelableExtra(Constants.PARCEL_RECIPE);
         String title = recipe.getName();
         setTitle(title);
     }

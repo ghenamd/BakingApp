@@ -35,7 +35,7 @@ public class RecipeDetailsFragment extends Fragment implements StepAdapter.OnSte
         View view = mBinding.getRoot();
         mAdapter = new IngredientAdapter(new ArrayList<Ingredient>());
         mStepAdapter = new StepAdapter(new ArrayList<Step>(),this);
-        Recipe recipe = getActivity().getIntent().getParcelableExtra(Constants.PARCEL);
+        Recipe recipe = getActivity().getIntent().getParcelableExtra(Constants.PARCEL_RECIPE);
 
         List<Ingredient> ingredients = recipe.getIngredients();
         List<Step> steps = recipe.getSteps();
@@ -55,7 +55,7 @@ public class RecipeDetailsFragment extends Fragment implements StepAdapter.OnSte
     @Override
     public void onClicked(Step step) {
         Intent intent = new Intent(getActivity(), StepDetailActivity.class);
-        intent.putExtra(Constants.PARCEL,step);
+        intent.putExtra(Constants.PARCEL_STEP,step);
         startActivity(intent);
 
     }

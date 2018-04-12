@@ -45,29 +45,28 @@
 
         <Button
             android:id="@+id/previous_button"
-            android:layout_width="126dp"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:background="@android:color/white"
             android:drawableStart="@drawable/ic_arrow_back_black_24dp"
             android:text="@string/previous"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/next_button"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
             android:id="@+id/next_button"
-            android:layout_width="126dp"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:background="@android:color/white"
             android:drawableEnd="@drawable/ic_arrow_forward_black_24dp"
             android:text="@string/next"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/previous_button"
-            app:layout_constraintVertical_bias="0.6" />
+            app:layout_constraintVertical_bias="0.58000004" />
     </android.support.constraint.ConstraintLayout>
 </layout>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
+    android:paddingLeft="16dp"
     android:layout_width="match_parent">
 
 <LinearLayout
@@ -14,15 +15,17 @@
         android:layout_height="wrap_content"
         android:id="@+id/text_quantity"
         android:gravity= "start"
+        android:textColor="@color/upsdellRed"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
         android:layout_weight="0.5"/>
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/text_measure"
-        android:paddingLeft="2dp"
+        android:paddingStart="5dp"
         android:textAllCaps="true"
         android:gravity="start"
+        android:textColor="@color/upsdellRed"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
         android:layout_weight="1"/>
     <TextView
@@ -30,6 +33,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/text_ingredient"
         android:gravity="start"
+        android:textColor="@android:color/black"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
         android:layout_weight="4"/>
 

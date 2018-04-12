@@ -43,6 +43,7 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.OnRecipeCl
         LinearLayoutManager manager = new LinearLayoutManager(mContext);
         mFragmentRecipeBinding.recipeFragmentRecyclerView.setLayoutManager(manager);
         mFragmentRecipeBinding.recipeFragmentRecyclerView.setHasFixedSize(true);
+        mFragmentRecipeBinding.recipeFragmentRecyclerView.setNestedScrollingEnabled(false);
 
         RestManager restManager = new RestManager();
         Call <ArrayList<Recipe>> call = restManager.getRecipeClient().getRecipes();

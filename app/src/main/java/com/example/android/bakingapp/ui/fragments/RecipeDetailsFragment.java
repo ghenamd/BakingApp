@@ -42,7 +42,9 @@ public class RecipeDetailsFragment extends Fragment implements StepAdapter.OnSte
         mAdapter.addIngredients(ingredients);
         mStepAdapter.addSteps(steps);
         mBinding.ingredientRecyclerView.setHasFixedSize(true);
+        mBinding.ingredientRecyclerView.setNestedScrollingEnabled(false);
         mBinding.stepsRecyclerView.setHasFixedSize(true);
+        mBinding.stepsRecyclerView.setNestedScrollingEnabled(false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getBaseContext());
         LinearLayoutManager layoutManagerSteps = new LinearLayoutManager(getActivity().getBaseContext());
         mBinding.ingredientRecyclerView.setLayoutManager(layoutManager);

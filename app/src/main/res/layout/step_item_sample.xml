@@ -15,8 +15,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_gravity="center_horizontal"
-            android:paddingTop="2dp"
-            android:paddingBottom="3dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="6dp"
             android:src="@drawable/bake_step"
              />
 
@@ -26,6 +26,7 @@
             android:layout_height="match_parent"
             android:layout_weight="3"
             android:gravity="center"
+            android:textColor="@android:color/black"
             android:text="@string/app_name"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
 

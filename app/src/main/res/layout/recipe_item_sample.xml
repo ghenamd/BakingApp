@@ -10,19 +10,21 @@
 
         <ImageView
             android:id="@+id/recipe_imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="188dp"
+            android:layout_height="203dp"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/baking" />
+            android:src="@drawable/baking_recipe" />
 
         <TextView
             android:id="@+id/recipe_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/pacificBlue"
             android:layout_below="@+id/recipe_imageView"
             android:layout_centerInParent="true"
-            android:paddingTop="10dp"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
 
         <View
             android:layout_width="match_parent"

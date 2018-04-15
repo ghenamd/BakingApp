@@ -20,6 +20,7 @@ import com.example.android.bakingapp.ui.adapters.IngredientAdapter;
 import com.example.android.bakingapp.ui.adapters.StepAdapter;
 import com.example.android.bakingapp.utils.Constants;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,8 @@ public class RecipeDetailsFragment extends Fragment implements StepAdapter.OnSte
     private IngredientAdapter mAdapter;
     private StepAdapter mStepAdapter;
     private static final String TAG = "RecipeDetailsFragment";
+    private List<Step> steps;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -38,13 +41,12 @@ public class RecipeDetailsFragment extends Fragment implements StepAdapter.OnSte
         Recipe recipe = getActivity().getIntent().getParcelableExtra(Constants.PARCEL_RECIPE);
 
         List<Ingredient> ingredients = recipe.getIngredients();
-        List<Step> steps = recipe.getSteps();
+        steps = recipe.getSteps();
         mAdapter.addIngredients(ingredients);
         mStepAdapter.addSteps(steps);
         mBinding.ingredientRecyclerView.setHasFixedSize(true);
         mBinding.ingredientRecyclerView.setNestedScrollingEnabled(false);
         mBinding.stepsRecyclerView.setHasFixedSize(true);
-        mBinding.stepsRecyclerView.setNestedScrollingEnabled(false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getBaseContext());
         LinearLayoutManager layoutManagerSteps = new LinearLayoutManager(getActivity().getBaseContext());
         mBinding.ingredientRecyclerView.setLayoutManager(layoutManager);
@@ -58,6 +60,7 @@ public class RecipeDetailsFragment extends Fragment implements StepAdapter.OnSte
     public void onClicked(Step step) {
         Intent intent = new Intent(getActivity(), StepDetailActivity.class);
         intent.putExtra(Constants.PARCEL_STEP,step);
+        intent.putExtra("Steps", (Serializable) steps);
         startActivity(intent);
 
     }

@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.android.bakingapp.R;
+import com.example.android.bakingapp.data.db.RecipeDatabase;
 import com.example.android.bakingapp.data.models.Recipe;
 import com.example.android.bakingapp.data.network.RestManager;
 import com.example.android.bakingapp.databinding.RecipeFragmentBinding;
@@ -32,6 +33,7 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.OnRecipeCl
     private Context mContext;
     private ArrayList<Recipe> mRecipes;
     private RecipeFragmentBinding mFragmentRecipeBinding;
+    private RecipeDatabase database;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -44,7 +46,7 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.OnRecipeCl
         mFragmentRecipeBinding.recipeFragmentRecyclerView.setLayoutManager(manager);
         mFragmentRecipeBinding.recipeFragmentRecyclerView.setHasFixedSize(true);
         mFragmentRecipeBinding.recipeFragmentRecyclerView.setNestedScrollingEnabled(false);
-
+        database = RecipeDatabase.getInstance(mContext);
         RestManager restManager = new RestManager();
         Call <ArrayList<Recipe>> call = restManager.getRecipeClient().getRecipes();
         call.enqueue(new Callback<ArrayList<Recipe>>() {
@@ -52,6 +54,7 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.OnRecipeCl
             public void onResponse(Call<ArrayList<Recipe>> call, Response<ArrayList<Recipe>> response) {
                 mRecipes = response.body();
                 mRecipeAdapter.addRecipe(mRecipes);
+
             }
 
             @Override
@@ -59,7 +62,7 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.OnRecipeCl
                 Log.d(TAG, "onFailure: " +String.valueOf(t));
             }
         });
-        ;
+
         mFragmentRecipeBinding.recipeFragmentRecyclerView.setAdapter(mRecipeAdapter);
         return view;
 

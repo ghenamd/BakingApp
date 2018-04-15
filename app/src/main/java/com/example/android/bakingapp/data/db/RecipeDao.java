@@ -23,10 +23,10 @@ public interface RecipeDao {
     void insertRecipe(RecipeRoom... recipes);
 
     @Insert
-    void insertIngredient(Ingredient... ingredients);
+    void insertIngredient(List<Ingredient> ingredients);
 
     @Insert
-    void insertSteps(Step... steps);
+    void insertSteps(List<Step> steps);
 
     @Query("SELECT * FROM ingredient WHERE recipeId IS :id")
     List<Ingredient> getRecipeIngredients (int id);

@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.example.android.bakingapp.utils.Constants.NEXT_STEP;
-import static com.example.android.bakingapp.utils.Constants.PLAYER_POSITION;
 import static com.example.android.bakingapp.utils.Constants.PREVIOUS_STEP;
 
 public class StepDetailsFragment extends Fragment {
@@ -49,19 +48,9 @@ public class StepDetailsFragment extends Fragment {
     private long mExoPlayerCurrentPosition;
     private List<Step> stepList;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        this.setRetainInstance(true);
-
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        if (savedInstanceState != null && savedInstanceState.containsKey(PLAYER_POSITION)) {
-            mExoPlayerCurrentPosition = savedInstanceState.getLong(PLAYER_POSITION);
-        }
 
         stepList = getActivity().getIntent().getParcelableArrayListExtra("Steps");
         mContext = getActivity().getBaseContext();
@@ -74,7 +63,7 @@ public class StepDetailsFragment extends Fragment {
         } else {
             step = getActivity().getIntent().getParcelableExtra(Constants.PARCEL_STEP);
         }
-        if (!step.getThumbnailURL().isEmpty() || !step.getVideoURL().isEmpty()) {
+        if (!step.getVideoURL().isEmpty()) {
             Uri videoUri = Uri.parse(step.getVideoURL());
             initializePlayer(videoUri);
         } else {
@@ -109,13 +98,12 @@ public class StepDetailsFragment extends Fragment {
 
     private void releasePlayer() {
         if (mExoPlayer != null) {
-            mExoPlayerCurrentPosition = mExoPlayer.getCurrentPosition();
             mExoPlayer.stop();
             mExoPlayer.release();
             mExoPlayer = null;
         }
-
     }
+
 
     @Override
     public void onPause() {
@@ -130,18 +118,10 @@ public class StepDetailsFragment extends Fragment {
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onDestroy() {
+        super.onDestroy();
         releasePlayer();
     }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putLong(PLAYER_POSITION, mExoPlayerCurrentPosition);
-
-    }
-
 
     private void ifDeviceIsLandscape() {
         if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -163,8 +143,8 @@ public class StepDetailsFragment extends Fragment {
         mBinding.nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                releasePlayer();
                 StepDetailsFragment fragment = new StepDetailsFragment();
-
                 if (step.getId() + 1 >= stepList.size()) {
                     Toast.makeText(mContext, "This is the last step", Toast.LENGTH_SHORT).show();
                 } else {
@@ -185,8 +165,9 @@ public class StepDetailsFragment extends Fragment {
         mBinding.previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                releasePlayer();
                 StepDetailsFragment fragment = new StepDetailsFragment();
-                if (step.getId()  <= 0) {
+                if (step.getId() <= 0) {
                     Toast.makeText(mContext, "This is the first step", Toast.LENGTH_SHORT).show();
                 } else {
                     Step steps = stepList.get(step.getId() - 1);
@@ -200,6 +181,5 @@ public class StepDetailsFragment extends Fragment {
             }
         });
     }
-
 
 }

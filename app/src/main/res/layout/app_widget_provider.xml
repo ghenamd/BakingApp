@@ -13,14 +13,10 @@
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
         />
 
-    <GridView
-        android:id="@+id/appwidget_listView"
+    <ListView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:numColumns="1"
-        android:horizontalSpacing="3dp"
-        android:verticalSpacing="3dp"
-
+        android:layout_height="wrap_content"
+        android:id="@+id/widget_list_view"
         />
 
 </LinearLayout>

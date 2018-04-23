@@ -1,31 +1,30 @@
 package com.example.android.bakingapp.widget;
 
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.example.android.bakingapp.R;
 import com.example.android.bakingapp.data.models.Ingredient;
+import com.example.android.bakingapp.ui.fragments.RecipeDetailsFragment;
+import com.example.android.bakingapp.utils.Util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeRemoteViewService extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        return new RecipeRemoteViewsFactory(this.getApplicationContext(),intent);
+        return new RecipeRemoteViewsFactory(this.getApplicationContext());
     }
 
     public class RecipeRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
-        private List<Ingredient> mIngredientList;
-        private Context mContext ;
-        private int appWidgetId;
-        public RecipeRemoteViewsFactory(Context context, Intent intent) {
+        private List<Ingredient> mIngredientList = new ArrayList<>();
+        private Context mContext;
+
+        public RecipeRemoteViewsFactory(Context context) {
             mContext = context;
-            appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                    AppWidgetManager.INVALID_APPWIDGET_ID);
         }
 
         @Override
@@ -35,10 +34,7 @@ public class RecipeRemoteViewService extends RemoteViewsService {
 
         @Override
         public void onDataSetChanged() {
-            if (mIngredientList == null){
-                mIngredientList = RecipeWidgetProvider.mIngredientList;
-            }
-
+            mIngredientList = RecipeDetailsFragment.mIngredients;
         }
 
         @Override
@@ -48,7 +44,7 @@ public class RecipeRemoteViewService extends RemoteViewsService {
 
         @Override
         public int getCount() {
-            if (mIngredientList == null)return 0;
+            if (mIngredientList == null) return 0;
             return mIngredientList.size();
         }
 
@@ -56,12 +52,7 @@ public class RecipeRemoteViewService extends RemoteViewsService {
         public RemoteViews getViewAt(int position) {
 
             RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.app_widget_list_item);
-            views.setTextViewText(R.id.widget_ingredient_name, (CharSequence) mIngredientList.get(position));
-            Bundle extras = new Bundle();
-            extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID,appWidgetId);
-            Intent i = new Intent();
-            i.putExtra("This",extras);
-            views.setOnClickFillInIntent(R.id.widget_title,i);
+            views.setTextViewText(R.id.widget_ingredient_name, Util.getIngredientFromList(mIngredientList,position));
             return views;
 
         }

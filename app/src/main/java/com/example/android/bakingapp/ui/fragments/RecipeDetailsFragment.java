@@ -19,7 +19,6 @@ import com.example.android.bakingapp.ui.StepDetailActivity;
 import com.example.android.bakingapp.ui.adapters.IngredientAdapter;
 import com.example.android.bakingapp.ui.adapters.StepAdapter;
 import com.example.android.bakingapp.utils.Constants;
-import com.example.android.bakingapp.widget.RecipeIntentService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,6 +30,8 @@ public class RecipeDetailsFragment extends Fragment implements StepAdapter.OnSte
     private StepAdapter mStepAdapter;
     private static final String TAG = "RecipeDetailsFragment";
     private List<Step> steps;
+    public static List<Ingredient> mIngredients = new ArrayList<>();
+    public static String mTitle;
 
 
     @Nullable
@@ -41,7 +42,8 @@ public class RecipeDetailsFragment extends Fragment implements StepAdapter.OnSte
         mAdapter = new IngredientAdapter(new ArrayList<Ingredient>());
         mStepAdapter = new StepAdapter(new ArrayList<Step>(),this);
         Recipe recipe = getActivity().getIntent().getParcelableExtra(Constants.PARCEL_RECIPE);
-
+        mTitle = recipe.getName();
+        mIngredients = recipe.getIngredients();
         List<Ingredient> ingredients = recipe.getIngredients();
         steps = recipe.getSteps();
         mAdapter.addIngredients(ingredients);
@@ -55,7 +57,6 @@ public class RecipeDetailsFragment extends Fragment implements StepAdapter.OnSte
         mBinding.ingredientRecyclerView.setAdapter(mAdapter);
         mBinding.stepsRecyclerView.setLayoutManager(layoutManagerSteps);
         mBinding.stepsRecyclerView.setAdapter(mStepAdapter);
-        RecipeIntentService.startUpdateIngredientWidget(getActivity().getBaseContext(),recipe);
         return view;
     }
 

@@ -6,26 +6,23 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.example.android.bakingapp.R;
-import com.example.android.bakingapp.data.models.Recipe;
+import com.example.android.bakingapp.ui.fragments.RecipeDetailsFragment;
 
 public class RecipeIntentService extends IntentService {
 
     public static final String ACTION_UPDATE_INGREDIENT= "com.example.android.bakingapp.widget.update";
-    public static final String RECIPE_SENT ="recipe_sent";
     private static final String TAG = "RecipeIntentService";
-    public static Recipe mRecipe;
+
     public RecipeIntentService() {
         super(TAG);
     }
-    public static void startUpdateIngredientWidget(Context context,Recipe recipe){
+
+    public static void startUpdateIngredientWidget(Context context){
         Intent intent = new Intent(context,RecipeIntentService.class);
         intent.setAction(ACTION_UPDATE_INGREDIENT);
-        intent.putExtra(RECIPE_SENT,recipe);
         context.startService(intent);
-
     }
 
     @Override
@@ -33,17 +30,15 @@ public class RecipeIntentService extends IntentService {
         if(intent != null){
             final String action = intent.getAction();
             if (ACTION_UPDATE_INGREDIENT.equals(action)){
-                mRecipe = intent.getParcelableExtra(RECIPE_SENT);
-                Log.d(TAG, "onHandleIntent: " + String.valueOf(mRecipe));
-                handleUpdateIngredientWidget(mRecipe);
+                handleUpdateIngredientWidget();
             }
         }
     }
 
-    private void handleUpdateIngredientWidget(Recipe recipe) {
+    private void handleUpdateIngredientWidget() {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        int[] appWidgetsId = appWidgetManager.getAppWidgetIds(new ComponentName(this,RecipeWidgetProvider.class));
-        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetsId, R.id.appwidget_listView);
-        RecipeWidgetProvider.updateIngredientWidget(this,appWidgetManager,appWidgetsId,recipe);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this,RecipeWidgetProvider.class));
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list_view);
+        RecipeWidgetProvider.updateIngredientWidget(this,appWidgetManager,appWidgetIds, RecipeDetailsFragment.mTitle);
     }
 }

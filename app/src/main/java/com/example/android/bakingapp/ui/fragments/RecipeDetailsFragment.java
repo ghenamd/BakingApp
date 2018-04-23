@@ -31,7 +31,7 @@ public class RecipeDetailsFragment extends Fragment implements StepAdapter.OnSte
     private static final String TAG = "RecipeDetailsFragment";
     private List<Step> steps;
     public static List<Ingredient> mIngredients = new ArrayList<>();
-    public static String mTitle;
+    public static String mTitle = "Title";
 
 
     @Nullable

@@ -16,24 +16,18 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId, String title) {
-        // Construct the RemoteViews object
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.app_widget_provider);
-//        Intent startAppFromWidget = new Intent(context, RecipeDetailsActivity.class);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
-//                startAppFromWidget, PendingIntent.FLAG_UPDATE_CURRENT);
-//        views.setOnClickPendingIntent(R.id.widget_list_view, pendingIntent);
-        views.setTextViewText(R.id.widget_title, title);
 
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.app_widget_provider);
+        views.setTextViewText(R.id.widget_title, title);
         Intent intent = new Intent(context,RecipeRemoteViewService.class);
         views.setRemoteAdapter(R.id.widget_list_view,intent);
-        // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
-        RecipeIntentService.startUpdateIngredientWidget(context);
+       RecipeIntentService.startUpdateIngredientWidget(context);
     }
 
     public static void updateIngredientWidget(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds, String title) {

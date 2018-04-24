@@ -19,6 +19,7 @@ import com.example.android.bakingapp.ui.StepDetailActivity;
 import com.example.android.bakingapp.ui.adapters.IngredientAdapter;
 import com.example.android.bakingapp.ui.adapters.StepAdapter;
 import com.example.android.bakingapp.utils.Constants;
+import com.example.android.bakingapp.widget.RecipeIntentService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class RecipeDetailsFragment extends Fragment implements StepAdapter.OnSte
     private static final String TAG = "RecipeDetailsFragment";
     private List<Step> steps;
     public static List<Ingredient> mIngredients = new ArrayList<>();
-    public static String mTitle = "Title";
+    public static String mTitle = "No Ingredients";
 
 
     @Nullable
@@ -57,6 +58,7 @@ public class RecipeDetailsFragment extends Fragment implements StepAdapter.OnSte
         mBinding.ingredientRecyclerView.setAdapter(mAdapter);
         mBinding.stepsRecyclerView.setLayoutManager(layoutManagerSteps);
         mBinding.stepsRecyclerView.setAdapter(mStepAdapter);
+        RecipeIntentService.startUpdateIngredientWidget(getActivity().getBaseContext());
         return view;
     }
 

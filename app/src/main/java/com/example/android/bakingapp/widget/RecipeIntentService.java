@@ -6,7 +6,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.example.android.bakingapp.R;
 import com.example.android.bakingapp.ui.fragments.RecipeDetailsFragment;
@@ -41,6 +40,5 @@ public class RecipeIntentService extends IntentService {
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this,RecipeWidgetProvider.class));
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list_view);
         RecipeWidgetProvider.updateIngredientWidget(this,appWidgetManager,appWidgetIds, RecipeDetailsFragment.mTitle);
-        Log.v(TAG, "Message "+ RecipeDetailsFragment.mIngredients);
     }
 }

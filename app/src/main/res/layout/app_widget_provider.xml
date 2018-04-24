@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     android:orientation="vertical">
     <FrameLayout
         android:layout_width="match_parent"
@@ -9,19 +10,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/widget_title"
-        android:background="#09C"
+        android:layout_marginStart="6dp"
+        android:background="@android:color/white"
         android:layout_gravity="center_horizontal"
         android:text="@string/widget_title"
-        android:layout_marginStart="5dp"
-        android:textColor="@android:color/black"
+        android:textColor="@color/pacificBlue"
+        android:textStyle="bold"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
         />
     </FrameLayout>
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         android:id="@+id/widget_list_view"
         />
-
 </LinearLayout>

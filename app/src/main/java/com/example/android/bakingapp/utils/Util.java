@@ -12,8 +12,6 @@ public class Util {
         String cup = ing.getMeasure();
         String description = ing.getIngredient();
         finalIngredient = String.valueOf(quantity) + " " + cup + " " + description;
-
-
         return finalIngredient;
     }
 }

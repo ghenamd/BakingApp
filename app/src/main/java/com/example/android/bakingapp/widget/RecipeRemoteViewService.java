@@ -7,11 +7,13 @@ import android.widget.RemoteViewsService;
 
 import com.example.android.bakingapp.R;
 import com.example.android.bakingapp.data.models.Ingredient;
-import com.example.android.bakingapp.ui.fragments.RecipeDetailsFragment;
 import com.example.android.bakingapp.utils.Util;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.android.bakingapp.ui.fragments.RecipeDetailsFragment.mIngredients;
+
 
 public class RecipeRemoteViewService extends RemoteViewsService {
     @Override
@@ -22,6 +24,7 @@ public class RecipeRemoteViewService extends RemoteViewsService {
     public class RecipeRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         private List<Ingredient> mIngredientList = new ArrayList<>();
         private Context mContext;
+        private static final String TAG = "RecipeRemoteViewsFactor";
 
         public RecipeRemoteViewsFactory(Context context) {
             mContext = context;
@@ -34,7 +37,7 @@ public class RecipeRemoteViewService extends RemoteViewsService {
 
         @Override
         public void onDataSetChanged() {
-            mIngredientList = RecipeDetailsFragment.mIngredients;
+            mIngredientList = mIngredients;
         }
 
         @Override
@@ -46,6 +49,7 @@ public class RecipeRemoteViewService extends RemoteViewsService {
         public int getCount() {
             if (mIngredientList == null) return 0;
             return mIngredientList.size();
+
         }
 
         @Override

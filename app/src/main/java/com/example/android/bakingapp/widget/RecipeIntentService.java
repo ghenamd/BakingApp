@@ -8,7 +8,8 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 
 import com.example.android.bakingapp.R;
-import com.example.android.bakingapp.ui.fragments.RecipeDetailsFragment;
+
+import static com.example.android.bakingapp.ui.fragments.RecipeDetailsFragment.recipe;
 
 public class RecipeIntentService extends IntentService {
 
@@ -39,6 +40,6 @@ public class RecipeIntentService extends IntentService {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this,RecipeWidgetProvider.class));
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list_view);
-        RecipeWidgetProvider.updateIngredientWidget(this,appWidgetManager,appWidgetIds, RecipeDetailsFragment.mTitle);
+        RecipeWidgetProvider.updateIngredientWidget(this,appWidgetManager,appWidgetIds, recipe.getName());
     }
 }

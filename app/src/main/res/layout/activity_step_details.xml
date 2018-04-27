@@ -4,6 +4,7 @@
     android:id="@+id/step_details_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:tag="step_detail"
     android:name="com.example.android.bakingapp.ui.fragments.StepDetailsFragment"
     tools:context =".ui.StepDetailActivity">
 

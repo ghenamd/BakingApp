@@ -31,8 +31,7 @@ public class RecipeDetailsFragment extends Fragment implements StepAdapter.OnSte
     private StepAdapter mStepAdapter;
     private static final String TAG = "RecipeDetailsFragment";
     private List<Step> steps;
-    public static List<Ingredient> mIngredients = new ArrayList<>();
-    public static String mTitle = "No Ingredients";
+    public static Recipe recipe = new Recipe();
 
 
     @Nullable
@@ -42,9 +41,7 @@ public class RecipeDetailsFragment extends Fragment implements StepAdapter.OnSte
         View view = mBinding.getRoot();
         mAdapter = new IngredientAdapter(new ArrayList<Ingredient>());
         mStepAdapter = new StepAdapter(new ArrayList<Step>(),this);
-        Recipe recipe = getActivity().getIntent().getParcelableExtra(Constants.PARCEL_RECIPE);
-        mTitle = recipe.getName();
-        mIngredients = recipe.getIngredients();
+        recipe = getActivity().getIntent().getParcelableExtra(Constants.PARCEL_RECIPE);
         List<Ingredient> ingredients = recipe.getIngredients();
         steps = recipe.getSteps();
         mAdapter.addIngredients(ingredients);
@@ -52,6 +49,7 @@ public class RecipeDetailsFragment extends Fragment implements StepAdapter.OnSte
         mBinding.ingredientRecyclerView.setHasFixedSize(true);
         mBinding.ingredientRecyclerView.setNestedScrollingEnabled(false);
         mBinding.stepsRecyclerView.setHasFixedSize(true);
+        mBinding.stepsRecyclerView.setNestedScrollingEnabled(false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getBaseContext());
         LinearLayoutManager layoutManagerSteps = new LinearLayoutManager(getActivity().getBaseContext());
         mBinding.ingredientRecyclerView.setLayoutManager(layoutManager);

@@ -12,7 +12,7 @@ import com.example.android.bakingapp.utils.Util;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.android.bakingapp.ui.fragments.RecipeDetailsFragment.mIngredients;
+import static com.example.android.bakingapp.ui.fragments.RecipeDetailsFragment.recipe;
 
 
 public class RecipeRemoteViewService extends RemoteViewsService {
@@ -37,7 +37,7 @@ public class RecipeRemoteViewService extends RemoteViewsService {
 
         @Override
         public void onDataSetChanged() {
-            mIngredientList = mIngredients;
+            mIngredientList = recipe.getIngredients();
         }
 
         @Override

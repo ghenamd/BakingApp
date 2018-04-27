@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.android.bakingapp.R;
-import com.example.android.bakingapp.data.db.RecipeDatabase;
 import com.example.android.bakingapp.data.models.Recipe;
 import com.example.android.bakingapp.data.network.RestManager;
 import com.example.android.bakingapp.databinding.RecipeFragmentBinding;
@@ -33,20 +33,24 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.OnRecipeCl
     private Context mContext;
     private ArrayList<Recipe> mRecipes;
     private RecipeFragmentBinding mFragmentRecipeBinding;
-    private RecipeDatabase database;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-
+        boolean isTablet = getActivity().getResources().getBoolean(R.bool.isTablet);
         mFragmentRecipeBinding= DataBindingUtil.inflate(inflater,R.layout.recipe_fragment,container,false);
         View view = mFragmentRecipeBinding.getRoot();
         mContext= getActivity().getBaseContext();
         mRecipeAdapter = new RecipeAdapter(new ArrayList<Recipe>(),this);
         LinearLayoutManager manager = new LinearLayoutManager(mContext);
-        mFragmentRecipeBinding.recipeFragmentRecyclerView.setLayoutManager(manager);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(mContext,2);
+        if (isTablet){
+            mFragmentRecipeBinding.recipeFragmentRecyclerView.setLayoutManager(gridLayoutManager);
+        }else{
+            mFragmentRecipeBinding.recipeFragmentRecyclerView.setLayoutManager(manager);
+        }
+
         mFragmentRecipeBinding.recipeFragmentRecyclerView.setHasFixedSize(true);
         mFragmentRecipeBinding.recipeFragmentRecyclerView.setNestedScrollingEnabled(false);
-        database = RecipeDatabase.getInstance(mContext);
         RestManager restManager = new RestManager();
         Call <ArrayList<Recipe>> call = restManager.getRecipeClient().getRecipes();
         call.enqueue(new Callback<ArrayList<Recipe>>() {
@@ -73,5 +77,6 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.OnRecipeCl
         intent.putExtra(Constants.PARCEL_RECIPE,recipe);
         startActivity(intent);
     }
+
 
 }

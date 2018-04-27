@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -34,9 +35,11 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.example.android.bakingapp.ui.fragments.RecipeDetailsFragment.recipe;
 import static com.example.android.bakingapp.utils.Constants.NEXT_STEP;
 import static com.example.android.bakingapp.utils.Constants.PREVIOUS_STEP;
 
@@ -47,28 +50,44 @@ public class StepDetailsFragment extends Fragment {
     private Step step;
     private long mExoPlayerCurrentPosition;
     private List<Step> stepList;
+    private final static String STEP_SAVED = "step_saved";
+    private final static String STEPLIST_SAVED = "steplist_saved";
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            stepList = savedInstanceState.getParcelableArrayList(STEPLIST_SAVED);
+            step = savedInstanceState.getParcelable(STEP_SAVED);
+        } else {
+            stepList = getActivity().getIntent().getParcelableArrayListExtra("Steps");
+            if (stepList == null) {
+                stepList = recipe.getSteps();
+            }
 
-        stepList = getActivity().getIntent().getParcelableArrayListExtra("Steps");
+            Bundle bundle = getArguments();
+            if (bundle != null && bundle.containsKey(NEXT_STEP)) {
+                step = bundle.getParcelable(NEXT_STEP);
+            } else if (bundle != null && bundle.containsKey(PREVIOUS_STEP)) {
+                step = bundle.getParcelable(PREVIOUS_STEP);
+            } else {
+                step = getActivity().getIntent().getParcelableExtra(Constants.PARCEL_STEP);
+            }
+            if (step == null) {
+                step = stepList.get(0);
+            }
+        }
         mContext = getActivity().getBaseContext();
         mBinding = DataBindingUtil.inflate(inflater, R.layout.step_details_fragment, container, false);
-        Bundle bundle = getArguments();
-        if (bundle != null && bundle.containsKey(NEXT_STEP)) {
-            step = bundle.getParcelable(NEXT_STEP);
-        } else if (bundle != null && bundle.containsKey(PREVIOUS_STEP)) {
-            step = bundle.getParcelable(PREVIOUS_STEP);
-        } else {
-            step = getActivity().getIntent().getParcelableExtra(Constants.PARCEL_STEP);
-        }
+        boolean isTablet = getActivity().getResources().getBoolean(R.bool.isTablet);
+        boolean isLandscape = getActivity().getResources().getBoolean(R.bool.isLandscape);
         if (!step.getVideoURL().isEmpty()) {
             Uri videoUri = Uri.parse(step.getVideoURL());
             initializePlayer(videoUri);
         } else {
             Picasso.with(getActivity()).load(R.drawable.no_video).fit().into(mBinding.noVideoImage);
             mBinding.noVideoImage.setVisibility(View.VISIBLE);
+            mBinding.exoPlayer.setVisibility(View.INVISIBLE);
         }
         String description = step.getDescription();
         mBinding.stepDescriptionTextView.setText(description);
@@ -182,4 +201,10 @@ public class StepDetailsFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(STEP_SAVED, step);
+        outState.putParcelableArrayList(STEPLIST_SAVED, (ArrayList<? extends Parcelable>) stepList);
+    }
 }

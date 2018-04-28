@@ -1,20 +1,31 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ScrollView
 
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <FrameLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
+            android:id="@+id/relativeLayout"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:id="@+id/status"
+                android:visibility="invisible"
+                android:text="@string/no_internet_connection"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                android:textStyle="normal"/>
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/progressBar"
+                android:visibility="visible"
+                android:layout_centerInParent="true"
+                 />
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recipe_fragment_recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
 
 
-        </FrameLayout>
-    </ScrollView>
 </layout>

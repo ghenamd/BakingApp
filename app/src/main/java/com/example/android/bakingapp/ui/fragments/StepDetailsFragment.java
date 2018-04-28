@@ -2,13 +2,11 @@ package com.example.android.bakingapp.ui.fragments;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -93,13 +91,17 @@ public class StepDetailsFragment extends Fragment {
         mBinding.stepDescriptionTextView.setText(description);
         nextStep();
         previousStep();
-        ifDeviceIsLandscape();
+        if (isLandscape){
+            if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+                Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).hide();
+            }
+        }
+
         return mBinding.getRoot();
     }
 
     private void initializePlayer(Uri uri) {
         if (mExoPlayer == null) {
-
             TrackSelection.Factory videoTrackSelector = new AdaptiveTrackSelection.Factory(new DefaultBandwidthMeter());
             TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelector);
             LoadControl loadControl = new DefaultLoadControl();
@@ -110,9 +112,7 @@ public class StepDetailsFragment extends Fragment {
                     new DefaultExtractorsFactory(), null, null);
             mExoPlayer.prepare(mediaSource);
             mExoPlayer.setPlayWhenReady(true);
-
         }
-
     }
 
     private void releasePlayer() {
@@ -122,7 +122,6 @@ public class StepDetailsFragment extends Fragment {
             mExoPlayer = null;
         }
     }
-
 
     @Override
     public void onPause() {
@@ -141,22 +140,6 @@ public class StepDetailsFragment extends Fragment {
         super.onDestroy();
         releasePlayer();
     }
-
-    private void ifDeviceIsLandscape() {
-        if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            mBinding.nextButton.setVisibility(View.INVISIBLE);
-            mBinding.previousButton.setVisibility(View.INVISIBLE);
-            mBinding.stepDescriptionTextView.setVisibility(View.INVISIBLE);
-            if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-                Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).hide();
-            }
-            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mBinding.exoPlayer.getLayoutParams();
-            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            mBinding.exoPlayer.setLayoutParams(params);
-        }
-    }
-
 
     private void nextStep() {
         mBinding.nextButton.setOnClickListener(new View.OnClickListener() {

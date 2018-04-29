@@ -5,8 +5,8 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +17,7 @@ import com.example.android.bakingapp.R;
 import com.example.android.bakingapp.data.models.Step;
 import com.example.android.bakingapp.databinding.StepDetailsFragmentBinding;
 import com.example.android.bakingapp.utils.Constants;
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
@@ -33,10 +34,10 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.example.android.bakingapp.ui.fragments.RecipeDetailsFragment.STEP_FROM_RDF;
 import static com.example.android.bakingapp.ui.fragments.RecipeDetailsFragment.recipe;
 import static com.example.android.bakingapp.utils.Constants.NEXT_STEP;
 import static com.example.android.bakingapp.utils.Constants.PREVIOUS_STEP;
@@ -46,41 +47,53 @@ public class StepDetailsFragment extends Fragment {
     private SimpleExoPlayer mExoPlayer;
     private Context mContext;
     private Step step;
-    private long mExoPlayerCurrentPosition;
     private List<Step> stepList;
-    private final static String STEP_SAVED = "step_saved";
-    private final static String STEPLIST_SAVED = "steplist_saved";
+    private final String RESUME_WINDOW = "resume_window";
+    private final String RESUME_POSITION = "resume_position";
+    private final String RESUME_STEP = "resume_step";
+    private final String STEPS = "Steps";
+    private long mResumePosition;
+    private int mResumeWindow;
+    private Uri videoUri;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(false);
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            stepList = savedInstanceState.getParcelableArrayList(STEPLIST_SAVED);
-            step = savedInstanceState.getParcelable(STEP_SAVED);
-        } else {
-            stepList = getActivity().getIntent().getParcelableArrayListExtra("Steps");
-            if (stepList == null) {
-                stepList = recipe.getSteps();
-            }
+            mResumePosition = savedInstanceState.getLong(RESUME_POSITION);
+            mResumeWindow = savedInstanceState.getInt(RESUME_WINDOW);
+            step = savedInstanceState.getParcelable(RESUME_STEP);
+        }
+        stepList = getActivity().getIntent().getParcelableArrayListExtra(STEPS);
+        if (stepList == null) {
+            stepList = recipe.getSteps();
+        }
 
-            Bundle bundle = getArguments();
-            if (bundle != null && bundle.containsKey(NEXT_STEP)) {
-                step = bundle.getParcelable(NEXT_STEP);
-            } else if (bundle != null && bundle.containsKey(PREVIOUS_STEP)) {
-                step = bundle.getParcelable(PREVIOUS_STEP);
-            } else {
-                step = getActivity().getIntent().getParcelableExtra(Constants.PARCEL_STEP);
-            }
-            if (step == null) {
-                step = stepList.get(0);
-            }
+        Bundle bundle = getArguments();
+        if (bundle != null && bundle.containsKey(NEXT_STEP)) {
+            step = bundle.getParcelable(NEXT_STEP);
+        } else if (bundle != null && bundle.containsKey(PREVIOUS_STEP)) {
+            step = bundle.getParcelable(PREVIOUS_STEP);
+        } else if (bundle != null && bundle.containsKey(STEP_FROM_RDF)) {
+            step = bundle.getParcelable(STEP_FROM_RDF);
+        } else {
+            step = getActivity().getIntent().getParcelableExtra(Constants.PARCEL_STEP);
+        }
+        if (step == null) {
+            step = stepList.get(0);
         }
         mContext = getActivity().getBaseContext();
         mBinding = DataBindingUtil.inflate(inflater, R.layout.step_details_fragment, container, false);
         boolean isTablet = getActivity().getResources().getBoolean(R.bool.isTablet);
         boolean isLandscape = getActivity().getResources().getBoolean(R.bool.isLandscape);
         if (!step.getVideoURL().isEmpty()) {
-            Uri videoUri = Uri.parse(step.getVideoURL());
+            videoUri = Uri.parse(step.getVideoURL());
             initializePlayer(videoUri);
         } else {
             Picasso.with(getActivity()).load(R.drawable.no_video).fit().into(mBinding.noVideoImage);
@@ -91,12 +104,8 @@ public class StepDetailsFragment extends Fragment {
         mBinding.stepDescriptionTextView.setText(description);
         nextStep();
         previousStep();
-        if (isLandscape){
-            if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-                Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).hide();
-            }
-        }
-
+        if (!isTablet && isLandscape){exoPlayerToLandscape(); }
+        if (isTablet){mBinding.previousButton.setVisibility(View.INVISIBLE);mBinding.nextButton.setVisibility(View.INVISIBLE);}
         return mBinding.getRoot();
     }
 
@@ -110,7 +119,11 @@ public class StepDetailsFragment extends Fragment {
             String userAgent = Util.getUserAgent(mContext, "BakingApp");
             MediaSource mediaSource = new ExtractorMediaSource(uri, new DefaultDataSourceFactory(mContext, userAgent),
                     new DefaultExtractorsFactory(), null, null);
-            mExoPlayer.prepare(mediaSource);
+            boolean resumePosition = mResumeWindow != C.INDEX_UNSET;
+            if (resumePosition) {
+                mBinding.exoPlayer.getPlayer().seekTo(mResumeWindow, mResumePosition);
+            }
+            mExoPlayer.prepare(mediaSource, false, false);
             mExoPlayer.setPlayWhenReady(true);
         }
     }
@@ -124,20 +137,29 @@ public class StepDetailsFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //Save ExoPlayer position and playerWindow;
+        outState.putInt(RESUME_WINDOW, mResumeWindow);
+        outState.putLong(RESUME_POSITION, mResumePosition);
+        outState.putParcelable(RESUME_STEP,step);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (videoUri != null) {
+            initializePlayer(videoUri);
+        }
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
-        releasePlayer();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        releasePlayer();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+        if (mExoPlayer != null) {
+            mResumeWindow = mExoPlayer.getCurrentWindowIndex();
+            mResumePosition = mExoPlayer.getContentPosition();
+        }
         releasePlayer();
     }
 
@@ -148,7 +170,7 @@ public class StepDetailsFragment extends Fragment {
                 releasePlayer();
                 StepDetailsFragment fragment = new StepDetailsFragment();
                 if (step.getId() + 1 >= stepList.size()) {
-                    Toast.makeText(mContext, "This is the last step", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, R.string.last_step, Toast.LENGTH_SHORT).show();
                 } else {
                     Step steps = stepList.get(step.getId() + 1);
                     Bundle args = new Bundle();
@@ -158,7 +180,6 @@ public class StepDetailsFragment extends Fragment {
                             replace(R.id.step_details_container, fragment).
                             commit();
                 }
-
             }
         });
     }
@@ -170,7 +191,7 @@ public class StepDetailsFragment extends Fragment {
                 releasePlayer();
                 StepDetailsFragment fragment = new StepDetailsFragment();
                 if (step.getId() <= 0) {
-                    Toast.makeText(mContext, "This is the first step", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, R.string.first_step, Toast.LENGTH_SHORT).show();
                 } else {
                     Step steps = stepList.get(step.getId() - 1);
                     Bundle args = new Bundle();
@@ -184,10 +205,16 @@ public class StepDetailsFragment extends Fragment {
         });
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(STEP_SAVED, step);
-        outState.putParcelableArrayList(STEPLIST_SAVED, (ArrayList<? extends Parcelable>) stepList);
+    private void exoPlayerToLandscape() {
+            mBinding.nextButton.setVisibility(View.INVISIBLE);
+            mBinding.previousButton.setVisibility(View.INVISIBLE);
+            mBinding.stepDescriptionTextView.setVisibility(View.INVISIBLE);
+            if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+                Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).hide();
+            }
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mBinding.exoPlayer.getLayoutParams();
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            mBinding.exoPlayer.setLayoutParams(params);
     }
 }

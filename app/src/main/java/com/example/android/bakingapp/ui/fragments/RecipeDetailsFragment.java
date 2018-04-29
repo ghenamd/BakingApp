@@ -30,9 +30,9 @@ public class RecipeDetailsFragment extends Fragment implements StepAdapter.OnSte
     private IngredientAdapter mAdapter;
     private StepAdapter mStepAdapter;
     private static final String TAG = "RecipeDetailsFragment";
+    public static final String STEP_FROM_RDF = "STEP_FROM_RDF";
     private List<Step> steps;
     public static Recipe recipe = new Recipe();
-
 
     @Nullable
     @Override
@@ -56,16 +56,27 @@ public class RecipeDetailsFragment extends Fragment implements StepAdapter.OnSte
         mBinding.ingredientRecyclerView.setAdapter(mAdapter);
         mBinding.stepsRecyclerView.setLayoutManager(layoutManagerSteps);
         mBinding.stepsRecyclerView.setAdapter(mStepAdapter);
+
         RecipeIntentService.startUpdateIngredientWidget(getActivity().getBaseContext());
         return view;
     }
 
     @Override
     public void onClicked(Step step) {
+        boolean isTablet = getActivity().getResources().getBoolean(R.bool.isTablet);
+        if (isTablet){
+            StepDetailsFragment fragment = new StepDetailsFragment();
+            Bundle args = new Bundle();
+            args.putParcelable(STEP_FROM_RDF, step);
+            fragment.setArguments(args);
+            getFragmentManager().beginTransaction().
+                    replace(R.id.step_details_container,fragment).
+                    commit();
+        }else {
         Intent intent = new Intent(getActivity(), StepDetailActivity.class);
         intent.putExtra(Constants.PARCEL_STEP,step);
         intent.putExtra("Steps", (Serializable) steps);
-        startActivity(intent);
+        startActivity(intent);}
 
     }
 }

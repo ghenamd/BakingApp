@@ -70,7 +70,6 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.OnRecipeCl
 
             @Override
             public void onFailure(Call<ArrayList<Recipe>> call, Throwable t) {
-                Log.d(TAG, "onFailure: " +String.valueOf(t));
             }
         });
 

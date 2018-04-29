@@ -18,13 +18,13 @@
             android:orientation="vertical"
             android:name="com.example.android.bakingapp.ui.fragments.RecipeDetailsFragment"
             tools:context=".ui.RecipeDetailsActivity"/>
-        <fragment
+        <FrameLayout
+
             android:id="@+id/step_details_container"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
-            android:name="com.example.android.bakingapp.ui.fragments.StepDetailsFragment"
-            tools:context =".ui.StepDetailActivity"/>
+            android:tag="step_detail"/>
 
     </LinearLayout>
 

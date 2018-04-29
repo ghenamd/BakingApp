@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements TestDelayer.Delay
 
     @Override
     public void onDone() {
-        Toast.makeText(getApplicationContext(),"Recipes loaded successfully",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), R.string.recipe_loaded_success,Toast.LENGTH_SHORT).show();
 
     }
 }

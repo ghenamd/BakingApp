@@ -1,14 +1,18 @@
 package com.example.android.bakingapp.ui.adapters;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.bakingapp.R;
 import com.example.android.bakingapp.data.models.Recipe;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -16,6 +20,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
     private ArrayList<Recipe> mRecipeList;
     private OnRecipeClicked mRecipeClicked;
+    private Context mContext;
 
     @NonNull
     @Override
@@ -30,11 +35,18 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         Recipe recipe = mRecipeList.get(position);
         String title = recipe.getName();
         holder.mTitle.setText(title);
+        String imageUrl = recipe.getImage();
+        if (!TextUtils.isEmpty(imageUrl)) {
+            Picasso.with(mContext).load(imageUrl).error(R.drawable.baking_recipe).into(holder.mImageView);
+        } else {
+            Picasso.with(mContext).load(R.drawable.baking_recipe).into(holder.mImageView);
+        }
     }
 
-    public RecipeAdapter(ArrayList<Recipe> recipeList, OnRecipeClicked recipeClicked) {
+    public RecipeAdapter(ArrayList<Recipe> recipeList, OnRecipeClicked recipeClicked, Context context) {
         mRecipeList = recipeList;
         mRecipeClicked = recipeClicked;
+        mContext = context;
     }
 
     public interface OnRecipeClicked {
@@ -55,10 +67,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView mTitle;
+        ImageView mImageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mTitle = itemView.findViewById(R.id.recipe_title);
+            mImageView = itemView.findViewById(R.id.recipe_imageView);
             itemView.setOnClickListener(this);
 
         }

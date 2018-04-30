@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +42,7 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.OnRecipeCl
         mFragmentRecipeBinding= DataBindingUtil.inflate(inflater,R.layout.recipe_fragment,container,false);
 
         Context context = getActivity().getBaseContext();
-        mRecipeAdapter = new RecipeAdapter(new ArrayList<Recipe>(),this);
+        mRecipeAdapter = new RecipeAdapter(new ArrayList<Recipe>(),this,getActivity().getBaseContext());
         LinearLayoutManager manager = new LinearLayoutManager(context);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context,2);
         if (isTablet){

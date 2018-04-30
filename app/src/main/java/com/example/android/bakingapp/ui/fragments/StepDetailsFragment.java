@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,9 +52,11 @@ public class StepDetailsFragment extends Fragment {
     private final String RESUME_WINDOW = "resume_window";
     private final String RESUME_POSITION = "resume_position";
     private final String RESUME_STEP = "resume_step";
+    private final String RESUME_PLAY_WHEN_READY = "resume_play_when_ready";
     private final String STEPS = "Steps";
     private long mResumePosition;
     private int mResumeWindow;
+    private boolean mPlayWhenReady;
     private Uri videoUri;
 
     @Override
@@ -69,6 +72,7 @@ public class StepDetailsFragment extends Fragment {
             mResumePosition = savedInstanceState.getLong(RESUME_POSITION);
             mResumeWindow = savedInstanceState.getInt(RESUME_WINDOW);
             step = savedInstanceState.getParcelable(RESUME_STEP);
+            mPlayWhenReady = savedInstanceState.getBoolean(RESUME_PLAY_WHEN_READY);
         }
         stepList = getActivity().getIntent().getParcelableArrayListExtra(STEPS);
         if (stepList == null) {
@@ -92,11 +96,22 @@ public class StepDetailsFragment extends Fragment {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.step_details_fragment, container, false);
         boolean isTablet = getActivity().getResources().getBoolean(R.bool.isTablet);
         boolean isLandscape = getActivity().getResources().getBoolean(R.bool.isLandscape);
-        if (!step.getVideoURL().isEmpty()) {
+        if (!TextUtils.isEmpty(step.getVideoURL())) {
             videoUri = Uri.parse(step.getVideoURL());
             initializePlayer(videoUri);
+        } else if (!TextUtils.isEmpty(step.getThumbnailURL())){
+            Picasso.with(getActivity()).
+                    load(step.getThumbnailURL()).
+                    error(R.drawable.no_video).
+                    fit().
+                    into(mBinding.noVideoImage);
+            mBinding.noVideoImage.setVisibility(View.VISIBLE);
+            mBinding.exoPlayer.setVisibility(View.INVISIBLE);
         } else {
-            Picasso.with(getActivity()).load(R.drawable.no_video).fit().into(mBinding.noVideoImage);
+            Picasso.with(getActivity()).
+                    load(R.drawable.no_video).
+                    fit().
+                    into(mBinding.noVideoImage);
             mBinding.noVideoImage.setVisibility(View.VISIBLE);
             mBinding.exoPlayer.setVisibility(View.INVISIBLE);
         }
@@ -121,10 +136,10 @@ public class StepDetailsFragment extends Fragment {
                     new DefaultExtractorsFactory(), null, null);
             boolean resumePosition = mResumeWindow != C.INDEX_UNSET;
             if (resumePosition) {
-                mBinding.exoPlayer.getPlayer().seekTo(mResumeWindow, mResumePosition);
+               mExoPlayer.seekTo(mResumeWindow, mResumePosition);
             }
             mExoPlayer.prepare(mediaSource, false, false);
-            mExoPlayer.setPlayWhenReady(true);
+            mExoPlayer.setPlayWhenReady(mPlayWhenReady);
         }
     }
 
@@ -143,6 +158,7 @@ public class StepDetailsFragment extends Fragment {
         outState.putInt(RESUME_WINDOW, mResumeWindow);
         outState.putLong(RESUME_POSITION, mResumePosition);
         outState.putParcelable(RESUME_STEP,step);
+        outState.putBoolean(RESUME_PLAY_WHEN_READY,mPlayWhenReady);
     }
 
     @Override
@@ -159,6 +175,7 @@ public class StepDetailsFragment extends Fragment {
         if (mExoPlayer != null) {
             mResumeWindow = mExoPlayer.getCurrentWindowIndex();
             mResumePosition = mExoPlayer.getContentPosition();
+            mPlayWhenReady = mExoPlayer.getPlayWhenReady();
         }
         releasePlayer();
     }

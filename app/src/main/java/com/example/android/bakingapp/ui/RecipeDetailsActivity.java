@@ -21,11 +21,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         boolean isTablet = getResources().getBoolean(R.bool.isTablet);
         if (isTablet && savedInstanceState == null){
             StepDetailsFragment fragment = new StepDetailsFragment();
-
             getFragmentManager().beginTransaction().add(R.id.step_details_container,fragment).commit();
         }
-
-
     }
-
 }
